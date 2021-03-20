@@ -35,7 +35,14 @@ def login():
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
-        pass
+        pending_user = request.form['username']
+        username = User.query.filter_by(name=pending_user)
+
+        if username is None:
+            pass
+
+        return
+    return render_template('register.html')
 
 
 if __name__ == '__main__':
