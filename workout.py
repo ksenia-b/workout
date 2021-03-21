@@ -36,13 +36,24 @@ def login():
 def register():
     if request.method == 'POST':
         pending_user = request.form['username']
-        username = User.query.filter_by(name=pending_user)
+
+        username = User.query.filter_by(name=pending_user).first()
 
         if username is None:
-            pass
+            new_user = User(name=pending_user, password_hash=request.form['password_hash'])
+            db.session.add(new_user)
+            db.session.commit()
 
-        return
+            session['username'] = pending_user
+            return redirect(url_for('index'))
+
     return render_template('register.html')
+
+
+@app.route('/logout')
+def logout():
+    session.pop('username')
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
