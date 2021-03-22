@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, url_for, session, redirect, g
-from model import db, User
+from model import db, User, Exercises, Exercise, Set, Workout
 import bcrypt
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'SecretKey1'
@@ -54,6 +55,24 @@ def register():
 def logout():
     session.pop('username')
     return redirect(url_for('index'))
+
+
+@app.route('/add_workout', methods=['POST', 'GET'])
+def add_workout():
+    if request.method == 'POST':
+        user = User.query.filter_by(name=session['username']).first()
+        workout = Workout(date=datetime.utcnow(), user=user.id)
+        exercise = Exercise(order=1, exercise_id=request.form['exercise'], workout=workout)
+        work_set = Set(order=1, exercise=exercise, weight=request.form['weight'], reps=request.form['reps'])
+
+        db.session.add(workout)
+        db.session.commit()
+
+        return redirect(url_for('index'))
+
+    exercises = Exercises.query.all()
+
+    return render_template('add_workout.html', exercises=exercises)
 
 
 if __name__ == '__main__':
