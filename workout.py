@@ -61,9 +61,24 @@ def logout():
 def add_workout():
     if request.method == 'POST':
         user = User.query.filter_by(name=session['username']).first()
-        workout = Workout(date=datetime.utcnow(), user=user.id)
-        exercise = Exercise(order=1, exercise_id=request.form['exercise'], workout=workout)
-        work_set = Set(order=1, exercise=exercise, weight=request.form['weight'], reps=request.form['reps'])
+
+        workout = Workout(date=datetime.utcnow(), user=user)
+        print("request form = ", request.form)
+        exercise_count = int(request.form['exercise_count'])
+
+        for exercise_num in range(1, exercise_count + 1):
+            exercise = Exercise(order=exercise_num, exercise_id=request.form['exercise'+ str(exercise_num)] , workout=workout)
+            print('exercise = ', exercise)
+            weights = request.form.getlist('weight' + str(exercise_num))
+            reps = request.form.getlist('reps' + str(exercise_num))
+
+            set_order = 1
+
+            for weight, rep in zip(weights, reps):
+                work_set = Set(order=set_order, exercise=exercise, weight=weight,
+                               reps=rep)
+                set_order += 1
+
 
         db.session.add(workout)
         db.session.commit()
@@ -76,4 +91,4 @@ def add_workout():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8002)

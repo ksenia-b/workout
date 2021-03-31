@@ -29,6 +29,7 @@ class Workout(db.Model):
     bodyweight = db.Column(db.Numeric)
     excercises = db.relationship('Exercise', backref='workout', lazy='dynamic')
 
+
 class Exercises(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))

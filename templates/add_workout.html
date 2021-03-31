@@ -4,21 +4,43 @@
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
             <form method="POST" action="{{ url_for('add_workout') }}" id="workout">
-
-                <select class="form-control" name="exercise" form="workout">
+                <select class="form-control" name="exercise1" form="workout">
                     {% for exercise in exercises %}
-                        <option value="{{ exercise.id }}">{{ exercise.name }}</option>
+                    <option value="{{ exercise.id }}">{{ exercise.name }}</option>
                     {% endfor %}
                 </select>
-                <div class="form-group">
+                <div class="form-group" id="exercise1" >
                     <label for="weight">Weight</label>
-                    <input type="text" class="form-control" name="weight" placeholder="weight">
-                      <label for="reps">reps</label>
-                    <input type="text" class="form-control" name="reps" placeholder="reps">
+                    <input type="text" class="form-control" name="weight1" placeholder="weight">
+                    <label for="reps">reps</label>
+                    <input type="text" class="form-control" name="reps1" placeholder="reps">
                 </div>
+
+                <button type="button" class="btn btn-info" id="addSet1" exercise="1">Add Set</button>
+                <button type="button" id="addExercise" class="btn btn-success">Add exercise</button>
+
+                <input type="hidden" name="exercise_count" value="1">
                 <button type="submit" class="btn btn-primary btn-block">Add workout</button>
             </form>
         </div>
     </div>
 </div>
+<script type="text/html" id="exercise_template">
+    <select class="form-control" name="exercise<%= exercise_num %>" form="workout">
+        {% for exercise in exercises %}
+        <option value="{{ exercise.id }}">{{ exercise.name }}</option>
+        {% endfor %}
+    </select>
+    <div class="form-group" id="exercise<%= exercise_num %>">
+
+    </div>
+    <button type="button" class="btn btn-info addSet" exercise="<%= exercise_num %">Add Set</button>
+</script>
+
+<script type="text/html" id="set_template">
+    <label>Weight</label>
+    <input type="text" class="form-control" name="weight<%= exercise_num %>" placaholder="weight">
+    <label>Reps</label>
+    <input type="text" class="form-control" name="reps<%= exercise_num %>" placaholder="reps">
+</script>
 {% endblock %}
